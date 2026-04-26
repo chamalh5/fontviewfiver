@@ -638,21 +638,10 @@ Generated: ${new Date().toLocaleString()}
   document.getElementById('previewDisplay').style.lineHeight = '1.4';
 
 
-function sendToGmail(event) {
-    event.preventDefault(); // Form එක reload වීම වළක්වයි
 
-    const name = document.getElementById('userName').value;
-    const email = document.getElementById('userEmail').value;
-    const message = document.getElementById('userMessage').value;
 
-    const subject = encodeURIComponent("Contact Form: " + name);
-    const body = encodeURIComponent("Name: " + name + "\nEmail: " + email + "\n\nMessage:\n" + message);
 
-    // Gmail Compose ලින්ක් එක සාදයි
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to= # &su=${subject}&body=${body}`;
 
-    // අලුත් ටැබ් එකක විවෘත කරයි
-    window.open(gmailUrl, '_blank');
 }
 </script>
 </body>
