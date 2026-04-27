@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JIBA Creative · Font Viewer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #f0f0f0;
+      --bg-secondary: #ffffff;
+      --text-primary: #111;
+      --text-secondary: #3a3a3a;
+      --border-color: #d4d4d4;
+      --button-bg: #2c5aa0;
+      --accent: #1e3a6b;
+      --shadow: 0 12px 28px rgba(0,0,0,0.08);
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #121212;
+      --bg-secondary: #1e1e1e;
+      --text-primary: #ededed;
+      --text-secondary: #b0b0b0;
+      --border-color: #333;
+      --button-bg: #3a6ea5;
+      --accent: #6ea8fe;
+    }
+
+    [data-theme="navy"] {
+      --bg-primary: #0a111f;
+      --bg-secondary: #162235;
+      --text-primary: #eef3ff;
+      --text-secondary: #bdd4ff;
+      --border-color: #2a3b55;
+      --button-bg: #1e3a5f;
+      --accent: #5e9eff;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 24px 28px 32px;
+      transition: 0.2s;
+      line-height: 1.5;
+    }
+
+    .app {
+      max-width: 1380px;
+      margin: 0 auto;
+    }
+
+    /* header */
+    .brand-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .studio-name-link {
+      font-size: 1.9rem;
+      font-weight: 700;
+      background: linear-gradient(130deg, var(--accent), #b77fdd);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      text-decoration: none;
+      letter-spacing: -0.2px;
+    }
+
+    .studio-name-link:hover {
+      opacity: 0.85;
+    }
+
+    .brand-badge {
+      font-size: 0.85rem;
+      background: var(--accent);
+      color: white;
+      padding: 5px 14px;
+      border-radius: 40px;
+      font-weight: 500;
+    }
+
+    .theme-selector {
+      display: flex;
+      gap: 12px;
+      background: var(--bg-secondary);
+      padding: 6px 16px;
+      border-radius: 60px;
+      border: 1px solid var(--border-color);
+    }
+
+    .theme-btn {
+      cursor: pointer;
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+
+    .theme-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* cards */
+    .upload-card, .preview-card {
+      background: var(--bg-secondary);
+      border-radius: 28px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
+    }
+
+    .font-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .meta-item {
+      background: var(--bg-primary);
+      padding: 16px 20px;
+      border-radius: 24px;
+      border-left: 4px solid var(--accent);
+    }
+
+    .meta-label {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .meta-value {
+      font-family: monospace;
+      font-size: 0.95rem;
+      word-break: break-word;
+    }
+
+    .preview-display {
+      background: var(--bg-primary);
+      border-radius: 24px;
+      padding: 32px 28px;
+      min-height: 260px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 28px;
+      line-height: 1.45;
+      border: 1px solid var(--border-color);
+    }
+
+    .file-trigger {
+      position: relative;
+      display: inline-block;
+      background: var(--button-bg);
+      padding: 14px 32px;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+      transition: 0.2s;
+    }
+
+    .file-trigger:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.02);
+    }
+
+    input[type="file"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      cursor: pointer;
+    }
+
+    .sample-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 20px 0 18px;
+    }
+
+    .sample-btn, .action-btn {
+      background: var(--border-color);
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+      color: var(--text-primary);
+    }
+
+    .sample-btn:hover, .action-btn:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .size-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      margin: 20px 0 18px;
+      align-items: center;
+    }
+
+    .size-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .size-slider {
+      width: 170px;
+    }
+
+    .size-number {
+      width: 70px;
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      text-align: center;
+    }
+
+    .action-bar {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 12px 0 30px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 16px;
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: inherit;
+      resize: vertical;
+      font-size: 0.95rem;
+    }
+
+    /* footer – clean, no email, no donation */
+    .footer-clean {
+      margin-top: 48px;
+      padding: 24px 28px;
+      background: var(--bg-secondary);
+      border-radius: 32px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .footer-text span {
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 680px) {
+      body { padding: 18px; }
+      .brand-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+<div class="app">
+  <div class="brand-header">
+    <div class="brand-group">
+      <a href="https://chamalh5.github.io/JIBAcreative/" target="_blank" class="studio-name-link">⚡ JIBA Creative</a>
+      <div class="brand-badge">premium type foundry</div>
+    </div>
+    <div class="theme-selector">
+      <div class="theme-btn active" data-theme="light" onclick="applyTheme('light')">☀️ Light</div>
+      <div class="theme-btn" data-theme="dark" onclick="applyTheme('dark')">🌙 Dark</div>
+      <div class="theme-btn" data-theme="navy" onclick="applyTheme('navy')">🌊 Navy</div>
+    </div>
+  </div>
+
+  <div class="upload-card">
+    <div class="file-trigger">
+      <input type="file" id="fontUpload" accept=".ttf,.otf,.woff,.woff2">
+      📂 Load Font (TTF / OTF / WOFF)
+    </div>
+    <div class="font-meta-grid hidden" id="infoPanel">
+      <div class="meta-item"><div class="meta-label">Font Name</div><div class="meta-value" id="fontNameDisplay">—</div></div>
+      <div class="meta-item"><div class="meta-label">Font Family</div><div class="meta-value" id="fontFamilyDisplay">—</div></div>
+      <div class="meta-item"><div class="meta-label">File Name</div><div class="meta-value" id="fileNameDisplay">—</div></div>
+      <div class="meta-item"><div class="meta-label">File Size</div><div class="meta-value" id="fileSizeDisplay">—</div></div>
+    </div>
+  </div>
+
+  <div class="preview-card hidden" id="previewContainer">
+    <h3 style="margin-bottom: 14px; color: var(--accent);">✧ Typography preview ✧</h3>
+    <textarea id="customPreviewText" rows="3">The quick brown fox jumps over the lazy dog
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+abcdefghijklmnopqrstuvwxyz
+1234567890 !@#$%^&*()</textarea>
+
+    <div class="sample-group">
+      <button class="sample-btn" onclick="insertSample('pangram')">Pangram</button>
+      <button class="sample-btn" onclick="insertSample('alphabet')">A–Z</button>
+      <button class="sample-btn" onclick="insertSample('numbers')">Numerals</button>
+      <button class="sample-btn" onclick="insertSample('lorem')">Lorem</button>
+      <button class="sample-btn" onclick="insertSample('special')">Special</button>
+    </div>
+
+    <div class="size-panel">
+      <div class="size-control">
+        <label>Font size:</label>
+        <input type="range" id="fontSlider" class="size-slider" min="8" max="128" value="28" oninput="updateFontSize(this.value)">
+        <input type="number" id="fontNumber" class="size-number" min="8" max="200" value="28" onchange="updateFontSize(this.value)">
+        <span>px</span>
+      </div>
+      <div class="size-control">
+        <label>Line height:</label>
+        <input type="range" id="lhSlider" class="size-slider" min="0.9" max="2.8" step="0.05" value="1.45" oninput="updateLineHeight(this.value)">
+        <input type="number" id="lhNumber" class="size-number" min="0.8" max="3.2" step="0.05" value="1.45" onchange="updateLineHeight(this.value)">
+      </div>
+    </div>
+
+    <div class="preview-display" id="livePreview">↑ Upload a font to see the magic.</div>
+  </div>
+
+  <div class="action-bar">
+    <button id="downloadInfoBtn" class="action-btn" disabled>📄 Export metadata</button>
+    <button class="action-btn" onclick="copyPreviewText()">📋 Copy text</button>
+  </div>
+
+  <div class="footer-clean">
+    <div class="footer-text">
+      <span><a href="https://chamalh5.github.io/JIBAcreative/" target="_blank" >JIBA Creative</a> · 
+<a href="https://chamalh5.github.io/JIBAcreative/" target="_blank" >HC Graphics Studio</a></span> — precision type design & lettering.
+    </div>
+    <div class="footer-text" style="margin-top: 8px; font-size: 0.75rem;">
+      © 2026 — font preview tool for creative evaluation.
+    </div>
+  </div>
+</div>
+
+<script>
+  let activeFont = null;
+  let currentFontRaw = '';
+
+  function applyTheme(theme) {
+    document.body.setAttribute('data-theme', theme);
+    document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.querySelector(`.theme-btn[data-theme="${theme}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+    try { localStorage.setItem('fontViewerTheme', theme); } catch(e) {}
+  }
+
+  (function init() {
+    try {
+      const saved = localStorage.getItem('fontViewerTheme') || 'light';
+      applyTheme(saved);
+    } catch(e) { applyTheme('light'); }
+  })();
+
+  const fontInput = document.getElementById('fontUpload');
+  fontInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const ext = '.' + file.name.split('.').pop().toLowerCase();
+    if (!['.ttf', '.otf', '.woff', '.woff2'].includes(ext)) {
+      alert('Supported: TTF, OTF, WOFF, WOFF2');
+      return;
+    }
+    try {
+      const buffer = await file.arrayBuffer();
+      const fontFace = new FontFace('PreviewFont', buffer);
+      await fontFace.load();
+      document.fonts.add(fontFace);
+      activeFont = fontFace;
+      currentFontRaw = file.name.replace(/\.[^/.]+$/, '');
+      document.getElementById('infoPanel').classList.remove('hidden');
+      document.getElementById('previewContainer').classList.remove('hidden');
+      document.getElementById('downloadInfoBtn').disabled = false;
+      updateMeta(file, fontFace);
+      refreshPreview();
+    } catch (err) {
+      alert('Invalid font file.');
+    }
+  });
+
+  function updateMeta(file, font) {
+    document.getElementById('fontNameDisplay').innerText = font.family || 'Custom';
+    document.getElementById('fontFamilyDisplay').innerText = font.family || 'OpenType';
+    document.getElementById('fileNameDisplay').innerText = file.name;
+    document.getElementById('fileSizeDisplay').innerText = formatBytes(file.size);
+  }
+
+  function formatBytes(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  }
+
+  function refreshPreview() {
+    const previewEl = document.getElementById('livePreview');
+    const txt = document.getElementById('customPreviewText').value || ' ';
+    previewEl.innerText = txt;
+    previewEl.style.fontFamily = activeFont ? 'PreviewFont, system-ui, sans-serif' : 'system-ui, sans-serif';
+  }
+
+  window.insertSample = (type) => {
+    const ta = document.getElementById('customPreviewText');
+    const samples = {
+      pangram: 'The quick brown fox jumps over the lazy dog.\nPack my box with five dozen liquor jugs.',
+      alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz',
+      numbers: '0123456789\n¹²³ ½ ¼ ¾ ⅓ ⅔ € £ ¥ © ® ™',
+      lorem: 'Lorem ipsum odor amet, consectetur adipiscing elit. Morbi gravida justo nec sapien dictum.',
+      special: '!@#$%^&*()_+-=[]{}|;:,.<>?\n"\'`~€£¥¢∞§¶•ªº–≠'
+    };
+    ta.value = samples[type] || samples.pangram;
+    refreshPreview();
+  };
+
+  window.updateFontSize = (val) => {
+    document.getElementById('fontSlider').value = val;
+    document.getElementById('fontNumber').value = val;
+    document.getElementById('livePreview').style.fontSize = val + 'px';
+  };
+
+  window.updateLineHeight = (val) => {
+    document.getElementById('lhSlider').value = val;
+    document.getElementById('lhNumber').value = val;
+    document.getElementById('livePreview').style.lineHeight = val;
+  };
+
+  function downloadMetadata() {
+    if (!activeFont) return alert('No font loaded.');
+    const name = document.getElementById('fontNameDisplay').innerText;
+    const family = document.getElementById('fontFamilyDisplay').innerText;
+    const fname = document.getElementById('fileNameDisplay').innerText;
+    const size = document.getElementById('fileSizeDisplay').innerText;
+    const preview = document.getElementById('customPreviewText').value;
+    const fz = document.getElementById('fontNumber').value;
+    const lh = document.getElementById('lhNumber').value;
+    const report = `═══════════════════════════════════
+  FONT METADATA
+═══════════════════════════════════
+Font name      : ${name}
+Font family    : ${family}
+File name      : ${fname}
+File size      : ${size}
+Preview        : ${fz}px / lh ${lh}
+Text sample:
+───────────────────────────────────
+${preview}
+───────────────────────────────────
+JIBA Creative Font Viewer
+${new Date().toLocaleString()}`;
+    const blob = new Blob([report], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.download = (currentFontRaw || 'typeface') + '_metadata.txt';
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  window.copyPreviewText = () => {
+    const text = document.getElementById('customPreviewText').value;
+    if (!text.trim()) return alert('No text to copy');
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✓ Copied!';
+      setTimeout(() => btn.innerHTML = orig, 1500);
+    }).catch(() => alert('Cannot copy'));
+  };
+
+  document.getElementById('customPreviewText').addEventListener('input', refreshPreview);
+  document.getElementById('downloadInfoBtn').addEventListener('click', downloadMetadata);
+  refreshPreview();
+</script>
+</body>
+</html>
